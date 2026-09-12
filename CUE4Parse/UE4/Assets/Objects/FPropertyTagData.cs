@@ -31,35 +31,35 @@ public class FPropertyTagData
         Type = type;
         switch (type)
         {
-            case "StructProperty":
+            case string when type.Equals("StructProperty", StringComparison.OrdinalIgnoreCase):
                 StructType = Ar.ReadFName().Text;
                 if (Ar.Ver >= EUnrealEngineObjectUE4Version.STRUCT_GUID_IN_PROPERTY_TAG)
                     StructGuid = Ar.Read<FGuid>();
                 break;
-            case "BoolProperty":
+            case string when type.Equals("BoolProperty", StringComparison.OrdinalIgnoreCase):
                 Bool = Ar.Ver >= EUnrealEngineObjectUE3Version.PROPERTYTAG_BOOL_OPTIMIZATION ? Ar.ReadFlag() : Ar.ReadBoolean();
                 break;
-            case "ByteProperty":
-            case "EnumProperty":
+            case string when type.Equals("ByteProperty", StringComparison.OrdinalIgnoreCase):
+            case string when type.Equals("EnumProperty", StringComparison.OrdinalIgnoreCase):
                 if (Ar.Ver >= EUnrealEngineObjectUE3Version.BYTEPROP_SERIALIZE_ENUM)
                     EnumName = Ar.ReadFName().Text;
                 break;
-            case "ArrayProperty":
+            case string when type.Equals("ArrayProperty", StringComparison.OrdinalIgnoreCase):
                 if (Ar.Ver >= EUnrealEngineObjectUE4Version.ARRAY_PROPERTY_INNER_TAGS)
                     InnerType = Ar.ReadFName().Text;
                 break;
-            case "SetProperty":
+            case string when type.Equals("SetProperty", StringComparison.OrdinalIgnoreCase):
                 if (Ar.Ver >= EUnrealEngineObjectUE4Version.PROPERTY_TAG_SET_MAP_SUPPORT)
                     InnerType = Ar.ReadFName().Text;
                 break;
-            case "MapProperty":
+            case string when type.Equals("MapProperty", StringComparison.OrdinalIgnoreCase):
                 if (Ar.Ver >= EUnrealEngineObjectUE4Version.PROPERTY_TAG_SET_MAP_SUPPORT)
                 {
                     InnerType = Ar.ReadFName().Text;
                     ValueType = Ar.ReadFName().Text;
                 }
                 break;
-            case "OptionalProperty":
+            case string when type.Equals("OptionalProperty", StringComparison.OrdinalIgnoreCase):
                 InnerType = Ar.ReadFName().Text;
                 break;
         }
@@ -71,10 +71,10 @@ public class FPropertyTagData
         Type = typeName.GetName();
         switch (Type)
         {
-            case "BoolProperty":
+            case string when Type.Equals("BoolProperty", StringComparison.OrdinalIgnoreCase):
                 Bool = false;
                 break;
-            case "StructProperty":
+            case string when Type.Equals("StructProperty", StringComparison.OrdinalIgnoreCase):
                 if (typeName.GetParameter(0) is { IsEmpty: false } structType)
                 {
                     StructType = structType.GetName();
@@ -83,24 +83,24 @@ public class FPropertyTagData
                     // if (typeName.GetParameter(1) is { } guid) StructGuid = new Guid(guid.GetName);
                 }
                 break;
-            case "ByteProperty":
-            case "EnumProperty":
+            case string when Type.Equals("ByteProperty", StringComparison.OrdinalIgnoreCase):
+            case string when Type.Equals("EnumProperty", StringComparison.OrdinalIgnoreCase):
                 if (typeName.GetParameter(0) is { IsEmpty: false } enumType)
                 {
                     EnumName = enumType.GetName();
                     Module = enumType.GetParameter(0).GetName();
                 }
                 break;
-            case "ArrayProperty":
-            case "SetProperty":
-            case "OptionalProperty":
+            case string when Type.Equals("ArrayProperty", StringComparison.OrdinalIgnoreCase):
+            case string when Type.Equals("SetProperty", StringComparison.OrdinalIgnoreCase):
+            case string when Type.Equals("OptionalProperty", StringComparison.OrdinalIgnoreCase):
                 if (typeName.GetParameter(0) is { IsEmpty: false } innerType)
                 {
                     InnerType = innerType.GetName();
                     InnerTypeData = InnerType != "None" && innerType[0].InnerCount != 0 ? new FPropertyTagData(innerType, InnerType) : null;
                 }
                 break;
-            case "MapProperty":
+            case string when Type.Equals("MapProperty", StringComparison.OrdinalIgnoreCase):
                 if (typeName.GetParameter(0) is { IsEmpty: false } keyType && typeName.GetParameter(1) is { IsEmpty: false } valueType)
                 {
                     InnerType = keyType.GetName();
@@ -141,18 +141,25 @@ public class FPropertyTagData
         switch (Type)
         {
             case "StructProperty":
+            case "structproperty":
                 sb.AppendFormat("<{0}>", StructType);
                 break;
             case "ByteProperty" when EnumName != null:
+            case "byteproperty" when EnumName != null:
             case "EnumProperty":
+            case "enumproperty":
                 sb.AppendFormat("<{0}>", EnumName);
                 break;
             case "ArrayProperty":
+            case "arrayproperty":
             case "SetProperty":
+            case "setproperty":
             case "OptionalProperty":
+            case "optionalproperty":
                 sb.AppendFormat("<{0}>", InnerTypeData?.ToString() ?? InnerType);
                 break;
             case "MapProperty":
+            case "mapproperty":
                 sb.AppendFormat("<{0}, {1}>", InnerTypeData?.ToString() ?? InnerType, ValueTypeData?.ToString() ?? ValueType);
                 break;
         }

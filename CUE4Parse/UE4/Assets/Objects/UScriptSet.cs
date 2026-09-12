@@ -33,7 +33,7 @@ public class UScriptSet
 
         var innerType = tagData?.InnerType ?? throw new ParserException(Ar, "UScriptSet needs inner type");
 
-        if (tagData.InnerTypeData is null && !Ar.HasUnversionedProperties && innerType == "StructProperty")
+        if (tagData.InnerTypeData is null && !Ar.HasUnversionedProperties && innerType.Equals("StructProperty", StringComparison.OrdinalIgnoreCase))
         {
             if (tagData.Name is "AnimSequenceInstances" or "PostProcessInstances")
             {

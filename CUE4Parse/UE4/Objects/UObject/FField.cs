@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using CUE4Parse.GameTypes.Borderlands4.Assets.Objects.Properties;
 using CUE4Parse.UE4.Assets.Exports;
 using CUE4Parse.UE4.Assets.Readers;
@@ -38,49 +40,56 @@ public class FField
 
     public override string ToString() => Name.Text;
 
-    public static FField Construct(FName fieldTypeName) => fieldTypeName.Text switch
+    public static FField Construct(FName fieldTypeName)
     {
-        "ArrayProperty" => new FArrayProperty(),
-        "BoolProperty" => new FBoolProperty(),
-        "ByteProperty" => new FByteProperty(),
-        "ClassProperty" => new FClassProperty(),
-        "DelegateProperty" => new FDelegateProperty(),
-        "EnumProperty" => new FEnumProperty(),
-        "FieldPathProperty" => new FFieldPathProperty(),
-        "DoubleProperty" => new FDoubleProperty(),
-        "FloatProperty" => new FFloatProperty(),
-        "Int16Property" => new FInt16Property(),
-        "Int64Property" => new FInt64Property(),
-        "Int8Property" => new FInt8Property(),
-        "IntProperty" => new FIntProperty(),
-        "InterfaceProperty" => new FInterfaceProperty(),
-        "MapProperty" => new FMapProperty(),
-        "MulticastDelegateProperty" => new FMulticastDelegateProperty(),
-        "MulticastInlineDelegateProperty" => new FMulticastInlineDelegateProperty(),
-        "NameProperty" => new FNameProperty(),
-        "ObjectProperty" or "ObjectPtrProperty" => new FObjectProperty(),
-        "SetProperty" => new FSetProperty(),
-        "SoftClassProperty" => new FSoftClassProperty(),
-        "SoftObjectProperty" => new FSoftObjectProperty(),
-        "StrProperty" => new FStrProperty(),
-        "Utf8StrProperty" => new FUtf8StrProperty(),
-        "StructProperty" => new FStructProperty(),
-        "TextProperty" => new FTextProperty(),
-        "UInt16Property" => new FUInt16Property(),
-        "UInt32Property" => new FUInt32Property(),
-        "UInt64Property" => new FUInt64Property(),
-        "WeakObjectProperty" => new FWeakObjectProperty(),
-        "OptionalProperty" => new FOptionalProperty(),
-        "VerseStringProperty" => new FVerseStringProperty(),
-        "VerseClassProperty" => new FVerseClassProperty(),
-        "VerseFunctionProperty" => new FVerseFunctionProperty(),
-        "VerseDynamicProperty" => new FVerseDynamicProperty(),
-        "ReferenceProperty" => new FReferenceProperty(),
+        var dict = new Dictionary<string, Func<FField>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["ArrayProperty"] = () => new FArrayProperty(),
+            ["BoolProperty"] = () => new FBoolProperty(),
+            ["ByteProperty"] = () => new FByteProperty(),
+            ["ClassProperty"] = () => new FClassProperty(),
+            ["DelegateProperty"] = () => new FDelegateProperty(),
+            ["EnumProperty"] = () => new FEnumProperty(),
+            ["FieldPathProperty"] = () => new FFieldPathProperty(),
+            ["DoubleProperty"] = () => new FDoubleProperty(),
+            ["FloatProperty"] = () => new FFloatProperty(),
+            ["Int16Property"] = () => new FInt16Property(),
+            ["Int64Property"] = () => new FInt64Property(),
+            ["Int8Property"] = () => new FInt8Property(),
+            ["IntProperty"] = () => new FIntProperty(),
+            ["InterfaceProperty"] = () => new FInterfaceProperty(),
+            ["MapProperty"] = () => new FMapProperty(),
+            ["MulticastDelegateProperty"] = () => new FMulticastDelegateProperty(),
+            ["MulticastInlineDelegateProperty"] = () => new FMulticastInlineDelegateProperty(),
+            ["NameProperty"] = () => new FNameProperty(),
+            ["ObjectProperty"] = () => new FObjectProperty(),
+            ["ObjectPtrProperty"] = () => new FObjectProperty(),
+            ["SetProperty"] = () => new FSetProperty(),
+            ["SoftClassProperty"] = () => new FSoftClassProperty(),
+            ["SoftObjectProperty"] = () => new FSoftObjectProperty(),
+            ["StrProperty"] = () => new FStrProperty(),
+            ["Utf8StrProperty"] = () => new FUtf8StrProperty(),
+            ["StructProperty"] = () => new FStructProperty(),
+            ["TextProperty"] = () => new FTextProperty(),
+            ["UInt16Property"] = () => new FUInt16Property(),
+            ["UInt32Property"] = () => new FUInt32Property(),
+            ["UInt64Property"] = () => new FUInt64Property(),
+            ["WeakObjectProperty"] = () => new FWeakObjectProperty(),
+            ["OptionalProperty"] = () => new FOptionalProperty(),
+            ["VerseStringProperty"] = () => new FVerseStringProperty(),
+            ["VerseClassProperty"] = () => new FVerseClassProperty(),
+            ["VerseFunctionProperty"] = () => new FVerseFunctionProperty(),
+            ["VerseDynamicProperty"] = () => new FVerseDynamicProperty(),
+            ["ReferenceProperty"] = () => new FReferenceProperty(),
 
-        "GameDataHandleProperty" => new FGameDataHandleProperty(),
-        "GbxDefPtrProperty" => new FGbxDefPtrProperty(),
-        _ => throw new ParserException("Unsupported serialized property type " + fieldTypeName)
-    };
+            ["GameDataHandleProperty"] = () => new FGameDataHandleProperty(),
+            ["GbxDefPtrProperty"] = () => new FGbxDefPtrProperty(),
+        };
+
+        return dict.TryGetValue(fieldTypeName.Text, out var func) ? func.Invoke() :
+            throw new ParserException("Unsupported serialized property type " + fieldTypeName);
+    }
+
 
     public static FField? SerializeSingleField(FAssetArchive Ar)
     {

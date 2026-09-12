@@ -413,46 +413,46 @@ namespace CUE4Parse.FileProvider.Vfs
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IAesVfsReader GetArchive(string archiveName, StringComparison comparison = StringComparison.Ordinal)
+        public IAesVfsReader GetArchive(string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
             => GetArchiveOrNull(archiveName, comparison) ?? throw new KeyNotFoundException($"There is no archive file with the name \"{archiveName}\"");
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IAesVfsReader? GetArchiveOrNull(string archiveName, StringComparison comparison = StringComparison.Ordinal)
+        public IAesVfsReader? GetArchiveOrNull(string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             return MountedVfs.FirstOrDefault(Predicate) ?? UnloadedVfs.FirstOrDefault(Predicate);
             bool Predicate(IAesVfsReader x) => x.Name.Equals(archiveName, comparison);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetArchive(string archiveName, [MaybeNullWhen(false)] out IAesVfsReader archive, StringComparison comparison = StringComparison.Ordinal)
+        public bool TryGetArchive(string archiveName, [MaybeNullWhen(false)] out IAesVfsReader archive, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             archive = GetArchiveOrNull(archiveName, comparison);
             return archive is not null;
         }
 
-        public GameFile this[string path, string archiveName, StringComparison comparison = StringComparison.Ordinal] => this[path, GetArchive(archiveName, comparison)];
+        public GameFile this[string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase] => this[path, GetArchive(archiveName, comparison)];
         public GameFile this[string path, IAesVfsReader archive]
             => TryGetGameFile(path, archive.Files, out var file)
                 ? file
                 : throw new KeyNotFoundException($"There is no game file with the path \"{path}\" in \"{archive.Name}\"");
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetGameFile(string path, string archiveName, [MaybeNullWhen(false)] out GameFile file, StringComparison comparison = StringComparison.Ordinal)
+        public bool TryGetGameFile(string path, string archiveName, [MaybeNullWhen(false)] out GameFile file, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             file = null;
             return TryGetArchive(archiveName, out var archive, comparison) && TryGetGameFile(path, archive.Files, out file);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte[] SaveAsset(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal)
+        public byte[] SaveAsset(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
             => SaveAsset(path, GetArchive(archiveName, comparison));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] SaveAsset(string path, IAesVfsReader archive) => SaveAsset(this[path, archive]);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FArchive CreateReader(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal)
+        public FArchive CreateReader(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
             => CreateReader(path, GetArchive(archiveName, comparison));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -475,14 +475,14 @@ namespace CUE4Parse.FileProvider.Vfs
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IPackage LoadPackage(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal)
+        public IPackage LoadPackage(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
             => LoadPackage(path, GetArchive(archiveName, comparison));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IPackage LoadPackage(string path, IAesVfsReader archive) => LoadPackage(this[path, archive]);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IReadOnlyDictionary<string, byte[]> SavePackage(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal)
+        public IReadOnlyDictionary<string, byte[]> SavePackage(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
             => SavePackage(path, GetArchive(archiveName, comparison));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -490,7 +490,7 @@ namespace CUE4Parse.FileProvider.Vfs
             => SavePackage(this[path, archive]);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TrySavePackage(string path, string archiveName, [MaybeNullWhen(false)] out IReadOnlyDictionary<string, byte[]> data, StringComparison comparison = StringComparison.Ordinal)
+        public bool TrySavePackage(string path, string archiveName, [MaybeNullWhen(false)] out IReadOnlyDictionary<string, byte[]> data, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             if (TryGetGameFile(path, archiveName, out var file, comparison))
             {

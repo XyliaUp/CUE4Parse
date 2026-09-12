@@ -1,5 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.CompilerServices;
 using CUE4Parse.UE4.IO.Objects;
+using CUE4Parse.UE4.Objects.Core.i18N;
 using Newtonsoft.Json;
 
 namespace CUE4Parse.UE4.Objects.UObject
@@ -25,7 +27,7 @@ namespace CUE4Parse.UE4.Objects.UObject
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _name.Name ?? "None";
         }
-        public bool IsNone => Text == "None";
+        public bool IsNone => Text.Equals("None", StringComparison.OrdinalIgnoreCase);
 
         public readonly FNameComparisonMethod ComparisonMethod;
 

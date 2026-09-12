@@ -8,7 +8,7 @@ public sealed class SkipObjectRegistrationAttribute : Attribute;
 public static class ObjectTypeRegistry
 {
     private static readonly Type _propertyHolderType = typeof(IPropertyHolder);
-    private static readonly Dictionary<string, Type> _classes = [];
+    private static readonly Dictionary<string, Type> _classes = new(StringComparer.OrdinalIgnoreCase);
 
     static ObjectTypeRegistry()
     {

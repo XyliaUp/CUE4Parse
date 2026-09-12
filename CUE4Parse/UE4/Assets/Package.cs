@@ -316,7 +316,7 @@ namespace CUE4Parse.UE4.Assets
             return uassetAr.ReadBytes((int) uassetAr.Length);
         }
 
-        public override int GetExportIndex(string name, StringComparison comparisonType = StringComparison.Ordinal)
+        public override int GetExportIndex(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
         {
             for (var i = 0; i < ExportMap.Length; i++)
             {
@@ -360,7 +360,7 @@ namespace CUE4Parse.UE4.Assets
             outerMostImport = ImportMap[-outerMostIndex.Index - 1];
             // We don't support loading script packages, so just return a fallback
             var outerMostObjectName = outerMostImport.ObjectName.Text;
-            if (outerMostObjectName.StartsWith("/Script/", StringComparison.Ordinal))
+            if (outerMostObjectName.StartsWith("/Script/", StringComparison.OrdinalIgnoreCase))
             {
                 return new ResolvedImportObject(import, this);
             }
@@ -455,11 +455,11 @@ namespace CUE4Parse.UE4.Assets
             public override ResolvedObject Class => new ResolvedLoadedObject(new UScriptClass(_import.ClassName.Text));
             public override Lazy<UObject>? Object => _import.ClassName.Text switch
             {
-                "Class" => new(() => new UScriptClass(Name.Text)),
-                "SharpClass" => new(() => new USharpClass(Name.Text)),
-                "PythonClass" => new(() => new UPythonClass(Name.Text)),
-                "ASClass" => new(() => new UASClass(Name.Text)),
-                "ScriptStruct" => new(() => new UScriptClass(Name.Text)),
+                "Class" or "class" => new(() => new UScriptClass(Name.Text)),
+                "SharpClass" or "sharpclass" => new(() => new USharpClass(Name.Text)),
+                "PythonClass" or "pythonclass" => new(() => new UPythonClass(Name.Text)),
+                "ASClass" or "asclass" => new(() => new UASClass(Name.Text)),
+                "ScriptStruct" or "scriptstruct" => new(() => new UScriptClass(Name.Text)),
                 _ => null
             };
         }

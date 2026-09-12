@@ -147,60 +147,63 @@ public abstract class FPropertyTagType
 
     internal static FPropertyTagType? ReadPropertyTagType(FAssetArchive Ar, string propertyType, FPropertyTagData? tagData, ReadType type, int size = 0)
     {
-        var tagType = propertyType switch
+        var dict = new Dictionary<string, Func<FPropertyTagType?>>(StringComparer.OrdinalIgnoreCase)
         {
-            "ArrayProperty" => new ArrayProperty(Ar, tagData, type, size),
-            "AssetObjectProperty" or "AssetClassProperty" => new AssetObjectProperty(Ar, type),
-            "BoolProperty" => new BoolProperty(Ar, tagData, type),
-            "ByteProperty" => (tagData?.EnumName != null && !tagData.EnumName.Equals("None", StringComparison.OrdinalIgnoreCase)) || (type is ReadType.MAP && Ar.TestReadFName()) || (Ar.Game < GAME_UE4_0 && Ar.Ver > EUnrealEngineObjectUE3Version.PropertyFlagsSizeExpandedTo64Bits && size != 1)
+            ["ArrayProperty"] = () => new ArrayProperty(Ar, tagData, type, size),
+            ["AssetObjectProperty"] = () => new AssetObjectProperty(Ar, type),
+            ["AssetClassProperty"] = () => new AssetObjectProperty(Ar, type),
+            ["BoolProperty"] = () => new BoolProperty(Ar, tagData, type),
+            ["ByteProperty"] = () => (tagData?.EnumName != null && !tagData.EnumName.Equals("None", StringComparison.OrdinalIgnoreCase)) || (type is ReadType.MAP && Ar.TestReadFName()) || (Ar.Game < GAME_UE4_0 && Ar.Ver > EUnrealEngineObjectUE3Version.PropertyFlagsSizeExpandedTo64Bits && size != 1)
                 ? (FPropertyTagType?) new EnumProperty(Ar, tagData, type)
                 : new ByteProperty(Ar, type),
-            "ClassProperty" => new ClassProperty(Ar, type),
-            "DelegateProperty" => new DelegateProperty(Ar, type),
-            "DoubleProperty" => new DoubleProperty(Ar, type),
-            "EnumProperty" => new EnumProperty(Ar, tagData, type),
-            "FieldPathProperty" => new FieldPathProperty(Ar, type),
-            "FloatProperty" => new FloatProperty(Ar, type),
-            "Int16Property" => new Int16Property(Ar, type),
-            "Int64Property" => new Int64Property(Ar, type),
-            "Int8Property" => new Int8Property(Ar, type),
-            "IntProperty" => new IntProperty(Ar, type),
-            "InterfaceProperty" => new InterfaceProperty(Ar, type),
-            "LazyObjectProperty" => new LazyObjectProperty(Ar, type),
-            "MapProperty" => new MapProperty(Ar, tagData, type),
-            "MulticastDelegateProperty" => new MulticastDelegateProperty(Ar, type),
-            "MulticastInlineDelegateProperty" => new MulticastInlineDelegateProperty(Ar, type),
-            "MulticastSparseDelegateProperty" => new MulticastSparseDelegateProperty(Ar, type),
-            "NameProperty" => new NameProperty(Ar, type),
-            "ObjectProperty" => Ar switch
-                {
-                    FLevelSaveRecordArchive => new AssetObjectProperty(Ar, type), // ObjectProperty but serialized as string
-                    FOW2ObjectsArchive OW2Ar => new FOW2ObjectProperty(OW2Ar, type),
-                    _ => new ObjectProperty(Ar, type),
-                },
-            "SetProperty" => new SetProperty(Ar, tagData, type),
-            "SoftClassProperty" or "SoftObjectProperty" => new SoftObjectProperty(Ar, type),
-            "StrProperty" => new StrProperty(Ar, type),
-            "AnsiStrProperty" => new AnsiStrProperty(Ar, type),
-            "Utf8StrProperty" => new Utf8StrProperty(Ar, type),
-            "StructProperty" => new StructProperty(Ar, tagData, type),
-            "TextProperty" => new TextProperty(Ar, type),
-            "UInt16Property" => new UInt16Property(Ar, type),
-            "UInt32Property" => new UInt32Property(Ar, type),
-            "UInt64Property" => new UInt64Property(Ar, type),
-            "WeakObjectProperty" => new WeakObjectProperty(Ar, type),
-            "OptionalProperty" => new OptionalProperty(Ar, tagData, type),
-            "ReferenceProperty" => new SoftObjectProperty(Ar, type),
-            "VerseStringProperty" => new VerseStringProperty(Ar, type),
-            "VerseFunctionProperty" => new DelegateProperty(Ar, type),
-            "VerseDynamicProperty" => new ObjectProperty(Ar, type), // idk, but for now read as ObjectProperty
-            "VerseClassProperty" => new VerseClassProperty(Ar, type),
+            ["ClassProperty"] = () => new ClassProperty(Ar, type),
+            ["DelegateProperty"] = () => new DelegateProperty(Ar, type),
+            ["DoubleProperty"] = () => new DoubleProperty(Ar, type),
+            ["EnumProperty"] = () => new EnumProperty(Ar, tagData, type),
+            ["FieldPathProperty"] = () => new FieldPathProperty(Ar, type),
+            ["FloatProperty"] = () => new FloatProperty(Ar, type),
+            ["Int16Property"] = () => new Int16Property(Ar, type),
+            ["Int64Property"] = () => new Int64Property(Ar, type),
+            ["Int8Property"] = () => new Int8Property(Ar, type),
+            ["IntProperty"] = () => new IntProperty(Ar, type),
+            ["InterfaceProperty"] = () => new InterfaceProperty(Ar, type),
+            ["LazyObjectProperty"] = () => new LazyObjectProperty(Ar, type),
+            ["MapProperty"] = () => new MapProperty(Ar, tagData, type),
+            ["MulticastDelegateProperty"] = () => new MulticastDelegateProperty(Ar, type),
+            ["MulticastInlineDelegateProperty"] = () => new MulticastInlineDelegateProperty(Ar, type),
+            ["MulticastSparseDelegateProperty"] = () => new MulticastSparseDelegateProperty(Ar, type),
+            ["NameProperty"] = () => new NameProperty(Ar, type),
+            ["ObjectProperty"] = () => Ar switch
+            {
+                FLevelSaveRecordArchive => new AssetObjectProperty(Ar, type), // ObjectProperty but serialized as string
+                FOW2ObjectsArchive OW2Ar => new FOW2ObjectProperty(OW2Ar, type),
+                _ => new ObjectProperty(Ar, type),
+            },
+            ["SetProperty"] = () => new SetProperty(Ar, tagData, type),
+            ["SoftClassProperty"] = () => new SoftObjectProperty(Ar, type),
+            ["SoftObjectProperty"] = () => new SoftObjectProperty(Ar, type),
+            ["StrProperty"] = () => new StrProperty(Ar, type),
+            ["AnsiStrProperty"] = () => new AnsiStrProperty(Ar, type),
+            ["Utf8StrProperty"] = () => new Utf8StrProperty(Ar, type),
+            ["StructProperty"] = () => new StructProperty(Ar, tagData, type),
+            ["TextProperty"] = () => new TextProperty(Ar, type),
+            ["UInt16Property"] = () => new UInt16Property(Ar, type),
+            ["UInt32Property"] = () => new UInt32Property(Ar, type),
+            ["UInt64Property"] = () => new UInt64Property(Ar, type),
+            ["WeakObjectProperty"] = () => new WeakObjectProperty(Ar, type),
+            ["OptionalProperty"] = () => new OptionalProperty(Ar, tagData, type),
+            ["ReferenceProperty"] = () => new SoftObjectProperty(Ar, type),
+            ["VerseStringProperty"] = () => new VerseStringProperty(Ar, type),
+            ["VerseFunctionProperty"] = () => new DelegateProperty(Ar, type),
+            ["VerseDynamicProperty"] = () => new ObjectProperty(Ar, type), // idk, but for now read as ObjectProperty
+            ["VerseClassProperty"] = () => new VerseClassProperty(Ar, type),
 
-            "CustomProperty_FD" or "GbxDefPtrProperty" when Ar.Game == GAME_Borderlands4 => new GbxDefPtrProperty(Ar, type),
-            "CustomProperty_FE" or "GameDataHandleProperty" when Ar.Game == GAME_Borderlands4 => new GameDataHandleProperty(Ar, type),
-
-            _ => null
+            ["CustomProperty_FD"] = () => Ar.Game == GAME_Borderlands4 ? new GbxDefPtrProperty(Ar, type) : null,
+            ["GbxDefPtrProperty"] = () => Ar.Game == GAME_Borderlands4 ? new GbxDefPtrProperty(Ar, type) : null,
+            ["CustomProperty_FE"] = () => Ar.Game == GAME_Borderlands4 ? new GameDataHandleProperty(Ar, type) : null,
+            ["GameDataHandleProperty"] = () => Ar.Game == GAME_Borderlands4 ? new GameDataHandleProperty(Ar, type) : null,
         };
+        var tagType = dict.GetValueOrDefault(propertyType)?.Invoke();
 #if DEBUG
         if (tagType == null)
         {

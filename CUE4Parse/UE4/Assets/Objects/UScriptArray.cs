@@ -44,11 +44,11 @@ public class UScriptArray
         {
             InnerTagData = tagData.InnerTypeData;
         }
-        else if (Ar.Ver >= EUnrealEngineObjectUE5Version.PROPERTY_TAG_COMPLETE_TYPE_NAME && InnerType == "StructProperty")
+        else if (Ar.Ver >= EUnrealEngineObjectUE5Version.PROPERTY_TAG_COMPLETE_TYPE_NAME && InnerType.Equals("StructProperty", StringComparison.OrdinalIgnoreCase))
         {
             InnerTagData = tagData.InnerTypeData;
         }
-        else if (Ar.Ver >= EUnrealEngineObjectUE4Version.INNER_ARRAY_TAG_INFO && InnerType == "StructProperty")
+        else if (Ar.Ver >= EUnrealEngineObjectUE4Version.INNER_ARRAY_TAG_INFO && InnerType.Equals("StructProperty", StringComparison.OrdinalIgnoreCase))
         {
             InnerTagData = new FPropertyTag(Ar, false).TagData;
             if (InnerTagData == null)
@@ -56,7 +56,7 @@ public class UScriptArray
         }
         else
         {
-            if (Ar.Game == GAME_DaysGone && InnerType == "StructProperty")
+            if (Ar.Game == GAME_DaysGone && InnerType.Equals("StructProperty", StringComparison.OrdinalIgnoreCase))
             {
                 var count = elementCount > 0 ? elementCount : 1;
                 var elemsize = (size - sizeof(int)) / count;
@@ -69,7 +69,7 @@ public class UScriptArray
 
         var readType = type == ReadType.RAW ? ReadType.RAW : ReadType.ARRAY;
         // special case for ByteProperty, as it can be read as a single byte or as EnumProperty
-        if (InnerType == "ByteProperty")
+        if (InnerType.Equals("ByteProperty", StringComparison.OrdinalIgnoreCase))
         {
             var enumprop = (InnerTagData?.EnumName != null && !InnerTagData.EnumName.Equals("None", StringComparison.OrdinalIgnoreCase)) || Ar.TestReadFName();
             if (!Ar.HasUnversionedProperties) enumprop = (size - sizeof(int)) / elementCount > 1;

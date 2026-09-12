@@ -81,8 +81,8 @@ public abstract class GameFile
     }
     public string Extension => _extension ??= Intern(_internedExtensions, Name.SubstringAfterLast('.'));
 
-    public bool IsUePackage => UePackageExtensionsSet.Contains(Extension);
-    public bool IsUePackagePayload => UePackagePayloadExtensionsSet.Contains(Extension);
+    public bool IsUePackage => UePackageExtensionsSet.Contains(Extension, StringComparer.OrdinalIgnoreCase);
+    public bool IsUePackagePayload => UePackagePayloadExtensionsSet.Contains(Extension, StringComparer.OrdinalIgnoreCase);
 
     public abstract byte[] Read(FByteBulkDataHeader? header = null);
     public abstract FArchive CreateReader(FByteBulkDataHeader? header = null);

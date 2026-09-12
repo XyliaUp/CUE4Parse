@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using CUE4Parse.UE4.Readers;
@@ -8,6 +9,7 @@ namespace CUE4Parse.UE4.Objects.Core.Math;
 /// USE Ar.Read<FVector2D> FOR FLOATS AND new FVector2D(Ar) FOR DOUBLES
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
+[TypeConverter(typeof(FVector2DConverter))]
 public struct FVector2D : IUStruct,
     IMultiplyOperators<FVector2D,FVector2D,FVector2D>,
     IMultiplyOperators<FVector2D,float,FVector2D>,

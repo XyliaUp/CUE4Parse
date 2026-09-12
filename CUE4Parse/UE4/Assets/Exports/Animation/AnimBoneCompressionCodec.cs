@@ -1,4 +1,5 @@
-﻿using System.Text;
+using System;
+using System.Text;
 
 namespace CUE4Parse.UE4.Assets.Exports.Animation
 {
@@ -10,7 +11,7 @@ namespace CUE4Parse.UE4.Assets.Exports.Animation
         public virtual UAnimBoneCompressionCodec? GetCodec(string ddcHandle)
         {
             var thisHandle = GetCodecDDCHandle();
-            return thisHandle == ddcHandle ? this : null;
+            return string.Equals(thisHandle, ddcHandle, StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         public string GetCodecDDCHandle()

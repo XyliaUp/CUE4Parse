@@ -97,10 +97,10 @@ public enum EGame : uint
         GAME_Placeholder3 = GAME_UE4_25 + 13,
         GAME_Back4Blood = GAME_UE4_25 + 14, // UE 4.25 Plus
         GAME_NiNoKuniCrossWorlds = GAME_UE4_25 + 15,
+        GAME_BladeAndSoul = GAME_UE4_25 + 16,
     GAME_UE4_26 = GameUtils.GameUe4Base + (26 << 16),
         GAME_GTATheTrilogyDefinitiveEdition = GAME_UE4_26 + 1,
         GAME_UE4_26_Plus = GAME_UE4_26 + 2,
-        GAME_BladeAndSoul = GAME_UE4_26 + 3,
         GAME_TowerOfFantasy = GAME_UE4_26 + 4,
         GAME_FinalFantasy7Rebirth = GAME_UE4_26 + 5,
         GAME_TheDivisionResurgence = GAME_UE4_26 + 6,

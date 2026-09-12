@@ -164,11 +164,11 @@ public class CMaterialParams2
     ];
 
     [JsonIgnore]
-    public readonly Dictionary<string, UUnrealMaterial> Textures = [];
-    public readonly Dictionary<string, FLinearColor> Colors = [];
-    public readonly Dictionary<string, float> Scalars = [];
-    public readonly Dictionary<string, bool> Switches = [];
-    public readonly Dictionary<string, object?> Properties = [];
+    public readonly Dictionary<string, UUnrealMaterial> Textures = new(StringComparer.OrdinalIgnoreCase);
+    public readonly Dictionary<string, FLinearColor> Colors = new(StringComparer.OrdinalIgnoreCase);
+    public readonly Dictionary<string, float> Scalars = new(StringComparer.OrdinalIgnoreCase);
+    public readonly Dictionary<string, bool> Switches = new(StringComparer.OrdinalIgnoreCase);
+    public readonly Dictionary<string, object?> Properties = new(StringComparer.OrdinalIgnoreCase);
 
     public IEnumerable<UUnrealMaterial> GetTextures(IEnumerable<string> names)
     {

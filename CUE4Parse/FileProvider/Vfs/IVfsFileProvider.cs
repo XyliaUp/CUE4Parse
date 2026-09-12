@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using CUE4Parse.Encryption.Aes;
 using CUE4Parse.FileProvider.Objects;
 using CUE4Parse.UE4.Assets;
@@ -60,18 +60,18 @@ namespace CUE4Parse.FileProvider.Vfs
         /// </summary>
         public void PostMount();
 
-        public IAesVfsReader GetArchive(string archiveName, StringComparison comparison = StringComparison.Ordinal);
-        public bool TryGetArchive(string archiveName, [MaybeNullWhen(false)] out IAesVfsReader archive, StringComparison comparison = StringComparison.Ordinal);
+        public IAesVfsReader GetArchive(string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
+        public bool TryGetArchive(string archiveName, [MaybeNullWhen(false)] out IAesVfsReader archive, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
 
-        public GameFile this[string path, string archiveName, StringComparison comparison = StringComparison.Ordinal] { get; }
+        public GameFile this[string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase] { get; }
         public GameFile this[string path, IAesVfsReader archive] { get; }
 
-        public bool TryGetGameFile(string path, string archiveName, [MaybeNullWhen(false)] out GameFile file, StringComparison comparison = StringComparison.Ordinal);
+        public bool TryGetGameFile(string path, string archiveName, [MaybeNullWhen(false)] out GameFile file, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
 
-        public byte[] SaveAsset(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal);
+        public byte[] SaveAsset(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
         public byte[] SaveAsset(string path, IAesVfsReader archive);
 
-        public FArchive CreateReader(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal);
+        public FArchive CreateReader(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
         public FArchive CreateReader(string path, IAesVfsReader archive);
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace CUE4Parse.FileProvider.Vfs
         /// <param name="archiveName">The archive to read from</param>
         /// <param name="comparison">The comparison to use for finding the archive</param>
         /// <returns>The parsed package content</returns>
-        public IPackage LoadPackage(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal);
+        public IPackage LoadPackage(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Loads and parses a Package from the passed archive.
@@ -110,9 +110,9 @@ namespace CUE4Parse.FileProvider.Vfs
         /// <returns>The parsed package content</returns>
         public IPackage LoadPackage(string path, IAesVfsReader archive);
 
-        public IReadOnlyDictionary<string, byte[]> SavePackage(string path, string archiveName, StringComparison comparison = StringComparison.Ordinal);
+        public IReadOnlyDictionary<string, byte[]> SavePackage(string path, string archiveName, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
         public IReadOnlyDictionary<string, byte[]> SavePackage(string path, IAesVfsReader archive);
 
-        public bool TrySavePackage(string path, string archiveName, [MaybeNullWhen(false)] out IReadOnlyDictionary<string, byte[]> data, StringComparison comparison = StringComparison.Ordinal);
+        public bool TrySavePackage(string path, string archiveName, [MaybeNullWhen(false)] out IReadOnlyDictionary<string, byte[]> data, StringComparison comparison = StringComparison.OrdinalIgnoreCase);
     }
 }

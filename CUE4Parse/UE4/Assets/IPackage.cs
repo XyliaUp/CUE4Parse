@@ -1,4 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using CUE4Parse.FileProvider;
 using CUE4Parse.MappingsProvider;
 using CUE4Parse.UE4.Assets.Exports;
@@ -24,24 +27,24 @@ public interface IPackage
 
     public bool HasFlags(EPackageFlags flags);
 
-    public int GetExportIndex(string name, StringComparison comparisonType = StringComparison.Ordinal);
+    public int GetExportIndex(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase);
     public ResolvedObject? ResolvePackageIndex(FPackageIndex? index);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public UObject? GetExportOrNull(string name, StringComparison comparisonType = StringComparison.Ordinal)
+    public UObject? GetExportOrNull(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
         => GetExport(GetExportIndex(name, comparisonType));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T? GetExportOrNull<T>(string name, StringComparison comparisonType = StringComparison.Ordinal) where T : UObject
+    public T? GetExportOrNull<T>(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) where T : UObject
         => GetExportOrNull(name, comparisonType) as T;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public UObject GetExport(string name, StringComparison comparisonType = StringComparison.Ordinal)
+    public UObject GetExport(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
         => GetExportOrNull(name, comparisonType) ??
            throw new NullReferenceException($"Package '{Name}' does not have an export with the name '{name}'");
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T GetExport<T>(string name, StringComparison comparisonType = StringComparison.Ordinal) where T : UObject
+    public T GetExport<T>(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) where T : UObject
         => GetExportOrNull<T>(name, comparisonType) ??
            throw new NullReferenceException($"Package '{Name}' does not have an export with the name '{name} and type {typeof(T).Name}'");
 

@@ -299,7 +299,7 @@ public class FSkelMeshSection
         Ar.Position += Ar.Game switch
         {
             GAME_OutlastTrials => 1,
-            GAME_RogueCompany or GAME_BladeAndSoul or GAME_SYNCED or
+            GAME_RogueCompany or GAME_SYNCED or
                 GAME_StarWarsHunters or GAME_NeedForSpeedMobile or GAME_ValorantSource => 4,
             GAME_FragPunk or GAME_InfinityNikki => 8,
             GAME_MortalKombat1 => 12,

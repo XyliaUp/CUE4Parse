@@ -20,16 +20,16 @@ public interface IPropertyHolder
     public List<FPropertyTag> Properties { get; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T GetOrDefault<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal);
+    public T GetOrDefault<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Lazy<T> GetOrDefaultLazy<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal);
+    public Lazy<T> GetOrDefaultLazy<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>(string name, StringComparison comparisonType = StringComparison.Ordinal);
+    public T Get<T>(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Lazy<T> GetLazy<T>(string name, StringComparison comparisonType = StringComparison.Ordinal);
+    public Lazy<T> GetLazy<T>(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T GetByIndex<T>(int index);
@@ -45,16 +45,16 @@ public abstract class AbstractPropertyHolder : IPropertyHolder
 {
     public List<FPropertyTag> Properties { get; protected set; } = new();
 
-    public T GetOrDefault<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal) =>
+    public T GetOrDefault<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
         PropertyUtil.GetOrDefault(this, name, defaultValue, comparisonType);
 
-    public Lazy<T> GetOrDefaultLazy<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal) =>
+    public Lazy<T> GetOrDefaultLazy<T>(string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
         PropertyUtil.GetOrDefaultLazy(this, name, defaultValue, comparisonType);
 
-    public T Get<T>(string name, StringComparison comparisonType = StringComparison.Ordinal) =>
+    public T Get<T>(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
         PropertyUtil.Get<T>(this, name, comparisonType);
 
-    public Lazy<T> GetLazy<T>(string name, StringComparison comparisonType = StringComparison.Ordinal) =>
+    public Lazy<T> GetLazy<T>(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase) =>
         PropertyUtil.GetLazy<T>(this, name, comparisonType);
 
     public T GetByIndex<T>(int index) => PropertyUtil.GetByIndex<T>(this, index);
@@ -606,7 +606,7 @@ public static class PropertyUtil
 {
     public static bool SearchPropertyInTemplate = false;
 
-    private static bool TryGet(this IPropertyHolder holder, string name, out FPropertyTag? tag, StringComparison comparisonType = StringComparison.Ordinal)
+    private static bool TryGet(this IPropertyHolder holder, string name, out FPropertyTag? tag, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         foreach (var prop in holder.Properties.Where(prop => prop.Name.Text.Equals(name, comparisonType)))
         {
@@ -635,7 +635,7 @@ public static class PropertyUtil
         return false;
     }
 
-    public static bool TryGet<T>(this IPropertyHolder holder, string name, out T value, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal)
+    public static bool TryGet<T>(this IPropertyHolder holder, string name, out T value, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         if (holder.TryGet(name, out var prop, comparisonType) && prop?.Tag?.GetValue(typeof(T)) is T val)
         {
@@ -648,7 +648,7 @@ public static class PropertyUtil
     }
 
     // TODO Little Problem here: Can't use T? since this would need a constraint to struct or class, which again wouldn't work fine with primitives
-    public static T GetOrDefault<T>(IPropertyHolder holder, string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal)
+    public static T GetOrDefault<T>(IPropertyHolder holder, string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         if (holder.TryGet(name, out var value, defaultValue, comparisonType))
         {
@@ -658,11 +658,11 @@ public static class PropertyUtil
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Lazy<T> GetOrDefaultLazy<T>(IPropertyHolder holder, string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.Ordinal)
+    public static Lazy<T> GetOrDefaultLazy<T>(IPropertyHolder holder, string name, T defaultValue = default!, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
         => new(() => GetOrDefault(holder, name, defaultValue, comparisonType));
 
     // Not optimal as well. Can't really compare against null or default. That's why this is a copy of GetOrDefault that throws instead
-    public static T Get<T>(IPropertyHolder holder, string name, StringComparison comparisonType = StringComparison.Ordinal)
+    public static T Get<T>(IPropertyHolder holder, string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         if (!holder.TryGet(name, out var tag) || tag?.Tag == null)
         {
@@ -678,7 +678,7 @@ public static class PropertyUtil
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Lazy<T> GetLazy<T>(IPropertyHolder holder, string name, StringComparison comparisonType = StringComparison.Ordinal)
+    public static Lazy<T> GetLazy<T>(IPropertyHolder holder, string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
         => new(() => Get<T>(holder, name, comparisonType));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -698,7 +698,7 @@ public static class PropertyUtil
         throw new NullReferenceException($"Couldn't get property of type {typeof(T).Name} at index '{index}' in {holder.GetType().Name}");
     }
 
-    public static void Set<T>(IPropertyHolder holder, string name, T value, StringComparison comparisonType = StringComparison.Ordinal)
+    public static void Set<T>(IPropertyHolder holder, string name, T value, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         FPropertyTag? tag = null;
         int foundIndex = -1;

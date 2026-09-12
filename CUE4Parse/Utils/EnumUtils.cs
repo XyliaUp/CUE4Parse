@@ -23,7 +23,7 @@ public static class EnumUtils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T GetValueByName<T>(string name) where T : Enum
     {
-        var start = name.IndexOf("::", StringComparison.Ordinal);
+        var start = name.IndexOf("::", StringComparison.OrdinalIgnoreCase);
         start = start == -1 ? 0 : start + 2;
         return (T) Enum.Parse(typeof(T), name.AsSpan(start));
     }

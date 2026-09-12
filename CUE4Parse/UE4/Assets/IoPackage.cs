@@ -387,7 +387,7 @@ public sealed class IoPackage : AbstractUePackage
         return packageIds;
     }
 
-    public override int GetExportIndex(string name, StringComparison comparisonType = StringComparison.Ordinal)
+    public override int GetExportIndex(string name, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         for (var i = 0; i < ExportMap.Length; i++)
         {
